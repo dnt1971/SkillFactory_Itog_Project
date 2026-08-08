@@ -138,7 +138,7 @@
 Для запуска образа выполните команду:
 *$ docker run -d -p 8000:8000 --name=prod_test dnt1971/project_cluster_container*
 
-Резервная копя docker-файла [тут](https://drive.google.com/file/d/1DRo2ng4De04yVPxEvlccC58_RSE3Ijz9/view?usp=drive_link)
+Резервная копия docker-файла [тут](https://drive.google.com/file/d/1DRo2ng4De04yVPxEvlccC58_RSE3Ijz9/view?usp=drive_link)
 
 
 :arrow_up:[к оглавлению](#оглавление)
