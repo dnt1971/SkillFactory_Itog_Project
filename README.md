@@ -29,7 +29,7 @@
 :arrow_up:[к оглавлению](#оглавление)
 
 ### Описание данных
-Данные о доходах, заболеваемости, социально незащищённых слоях населения России и другие экономические и демографические данные [здесь](https://drive.google.com/file/d/1WLGnZY7XpD1cO8a-U1Jncb9oysC3fTg8/view?usp=drive_link) или [здесь](https://drive.google.com/file/d/1OcEkhJfZVMwWDtpSwWUGuCOzRJmbTk3N/view?usp=drive_link)
+Данные о доходах, заболеваемости, социально незащищённых слоях населения России и другие экономические и демографические данные [здесь](https://drive.google.com/file/d/1WLGnZY7XpD1cO8a-U1Jncb9oysC3fTg8/view?usp=drive_link) 
 
 ➔ [child_mortality_rural_1990_2021.xls](https://docs.google.com/spreadsheets/d/13idFZetR43Ceh0YGxz4e7ZBgltflTzqz/edit?usp=drive_link&ouid=103632009178932960617&rtpof=true&sd=true) — число умерших на первом году жизни детей за год, по всем регионам, в сельской местности.
 
