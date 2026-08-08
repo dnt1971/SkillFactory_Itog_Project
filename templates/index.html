@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Кластерный анализ регионов РФ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="/static/style.css"/>
+
+    <!--<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>-->
+    <script src="https://cdn.plot.ly/plotly-3.6.0.min.js" charset="utf-8"></script>
+</head>
+<body>
+    <header class="app-header">
+        <div class="logo">🗺️</div>
+        <div>
+            <h1>Кластерный анализ регионов России</h1>
+            <p>Интерактивный анализ результатов кластеризации</p>
+        </div>
+    </header>
+
+    <nav class="tabs-nav">
+        <button class="tab-btn active" onclick="switchTab('cluster')">
+            🔷 По кластеру
+        </button>
+        <button class="tab-btn" onclick="switchTab('region')">
+            📍 По региону
+        </button>
+        <button class="tab-btn" onclick="switchTab('map')">
+            🗺️ Карта
+        </button>
+        <button class="tab-btn" onclick="switchTab('polar')">
+            🗺️ Полярная диаграмма
+        </button>
+        <button class="tab-btn" onclick="switchTab('polarOne')">
+            🗺️ Полярная диаграмма (подробно)
+        </button>
+    </nav>
+
+    <!-- ══════════════════════════════════════════════════════ TAB 1 ══ -->
+    <div id="tab-cluster" class="tab-content active">
+        <div id="stats-row" class="stats-row">
+            <div class="stat-card">
+                <div class="stat-num" id="total-regions">—</div>
+                <div class="stat-label">Регионов</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" id="total-clusters">—</div>
+                <div class="stat-label">Кластеров</div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <!-- Selector -->
+            <div>
+                <div class="card">
+                    <div class="card-title">Выберите кластер</div>
+                    <div class="select-wrapper">
+                        <select id="cluster-select" onchange="loadCluster()">
+                            <option value="">— выберите кластер —</option>
+                            {% for c in clusters %}
+                            <option value="{{ c.cluster }}">Кластер {{ c.cluster }} — {{ c.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div id="cluster-info-block" style="display:none;" class="info-block" style="margin-top:1rem;">
+                        <div class="info-label">Описание кластера</div>
+                        <div id="cluster-name" class="info-value" style="margin-bottom:0.5rem;"></div>
+                        <div id="cluster-info" class="info-info"></div>
+                        <div style="margin-top:1rem; display:flex; align-items:center; gap:0.5rem;">
+                            <span style="font-size:0.8rem;color:#64748b;">Регионов в кластере:</span>
+                            <span class="count-chip" id="cluster-count">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="card">
+                <div class="card-title">Регионы кластера</div>
+                <div id="cluster-regions-container">
+                    <div class="placeholder">
+                        <div class="ph-icon">🔷</div>
+                        <p>Выберите кластер слева, чтобы увидеть входящие регионы</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════ TAB 2 ══ -->
+    <div id="tab-region" class="tab-content">
+        <div class="grid-2">
+            <!-- Selector -->
+            <div>
+                <div class="card">
+                    <div class="card-title">Выберите регион</div>
+                    <div class="select-wrapper">
+                        <select id="region-select" onchange="loadRegion()">
+                            <option value="">— выберите регион —</option>
+                            {% for r in regions %}
+                            <option value="{{ r }}">{{ r }}</option>
+                            {% endfor %}
+                        </select>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Result -->
+          <div class="card">
+              <div class="card-title">Информация о кластере региона</div>
+              <div id="region-result">
+                  <div class="placeholder">
+                      <div class="ph-icon">📍</div>
+                      <p>Выберите регион, чтобы увидеть его кластер и характеристики</p>
+                  </div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════ TAB 3 ══ -->
+    <div id="tab-map" class="tab-content">
+        <div class="card" style="margin-bottom:1rem; padding:1rem 1.5rem; background:linear-gradient(135deg,#f8faff,#eef2ff);">
+            <p style="font-size:0.88rem;color:#475569; line-height:1.6;">
+                <strong>Интерактивная карта:</strong> кликните на маркер региона, чтобы увидеть его кластер и описание.
+                Используйте прокрутку мыши для масштабирования. Цвет маркера соответствует кластеру.
+            </p>
+            <div id="map-legend" style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:0.75rem;"></div>
+        </div>
+        <div id="map-container">
+            <div id="map-plot">
+                <div style="display:flex;align-items:center;justify-content:center;height:580px;flex-direction:column;gap:1rem;color:#64748b;">
+                    <div class="spinner"></div>
+                    <p>Загрузка карты…</p>
+                </div>
+            </div>
+        </div>
+        <!-- Info panel below map -->
+        <div id="map-info-panel" style="display:none; margin-top:1rem;">
+            <div class="info-block">
+                <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+                    <div>
+                        <div class="info-label">Регион</div>
+                        <div class="info-value" id="map-region-name">—</div>
+                    </div>
+                  <div id="map-cluster-badge"></div>
+                  </div>
+                  <div class="info-desc" id="map-region-desc"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════ TAB 4 ══ -->
+    <div id="tab-polar" class="tab-content" style="width:100%; max-width:800px; height:800px;"></div>
+    <div id="tab-polarOne" class="tab-content" style="width:100%; max-width:800px; height:800px;"></div>
+    <div id="tab-polarOne" class="tab-content" style="width:100%; max-width:800px; height:800px;"></div>
+
+
+    <script>
+    // ─── Colors ──────────────────────────────────────────────────────────────────
+    const CLUSTER_COLORS = {1:'#4f46e5', 2:'#0891b2', 3:'#059669', 4:'#d97706', 5:'#dc2626'};
+    const CLUSTER_COLORS_LIGHT = {1:'#eef2ff', 2:'#ecfeff', 3:'#ecfdf5', 4:'#fffbeb', 5:'#fef2f2'};
+
+    // ─── Tab switching ────────────────────────────────────────────────────────────
+    function switchTab( name ) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById('tab-' + name).classList.add('active');
+        event.currentTarget.classList.add('active');
+        if (name === 'map' && !window._mapLoaded) loadMap();
+        if (name === 'polar')  loadPolarAll();
+        if (name === 'polarOne') loadPolarByOne();
+    }
+
+    // ─── Init stats ──────────────────────────────────────────────────────────────
+    async function loadStats() {
+        const resp = await fetch('/api/regions');
+        const data = await resp.json();
+        const clusters = [...new Set(data.map(d => d.cluster))];
+        document.getElementById('total-regions').textContent = data.length;
+        document.getElementById('total-clusters').textContent = clusters.length;
+    }
+    loadStats();
+
+    // ─── Tab 1: cluster → regions ────────────────────────────────────────────────
+    async function loadCluster() {
+        const id = document.getElementById('cluster-select').value;
+        if (!id) return;
+
+        const container = document.getElementById('cluster-regions-container');
+        container.innerHTML = '<div class="spinner"></div>';
+
+        const resp = await fetch(`/api/clusters/${id}`);
+        const data = await resp.json();
+
+        // Info block
+        const infoBlock = document.getElementById('cluster-info-block');
+        document.getElementById('cluster-name').textContent = data.name;
+        document.getElementById('cluster-info').textContent = data.info;
+        document.getElementById('cluster-count').textContent = data.count;
+        infoBlock.style.display = 'block';
+
+        // Region list
+        if (!data.regions || data.regions.length === 0) {
+            container.innerHTML = '<div class="placeholder"><div class="ph-icon">😕</div><p>Регионы не найдены</p></div>';
+            return;
+        }
+
+        const color = CLUSTER_COLORS[parseInt(id)] || '#4f46e5';
+        container.innerHTML = `
+            <div style="font-size:0.82rem;color:#64748b;margin-bottom:0.75rem;">${data.regions.length} регионов</div>
+            <div class="region-list">
+                ${data.regions.map(r => `
+                    <div class="region-item" style="border-left:3px solid ${color}; cursor:pointer;"
+                        onclick="goToRegion('${r.replace(/'/g, "\\'")}')">
+                        <span>📍</span> ${r}
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    // Navigate to region tab
+    function goToRegion(name) {
+        switchTab('region');
+        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        document.querySelectorAll('.tab-btn')[0].classList.remove('active');
+        const sel = document.getElementById('region-select');
+        sel.value = name;
+        loadRegion();
+    }
+
+    // ─── Tab 2: region → cluster info ────────────────────────────────────────────
+    async function loadRegion() {
+        const name = document.getElementById('region-select').value;
+        if (!name) return;
+
+        const container = document.getElementById('region-result');
+        container.innerHTML = '<div class="spinner"></div>';
+
+        const resp = await fetch(`/api/regions/${encodeURIComponent(name)}`);
+        const data = await resp.json();
+
+        if (data.error) {
+            container.innerHTML = `<div class="placeholder"><div class="ph-icon">❌</div><p>${data.error}</p></div>`;
+            return;
+        }
+
+        const color = CLUSTER_COLORS[data.cluster] || '#4f46e5';
+        const lightColor = CLUSTER_COLORS_LIGHT[data.cluster] || '#f5f5f5';
+
+      container.innerHTML = `
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.75rem; margin-bottom:1rem;">
+            <div style="font-size:1.1rem; font-weight:700; color:#1e293b;">${name}</div>
+            <div class="cluster-badge c${data.cluster}">
+                <div class="cluster-dot"></div>
+                Кластер ${data.cluster}
+            </div>
+        </div>
+        <div style="background:${lightColor}; border:1.5px solid ${color}30; border-left:4px solid ${color};border-radius:8px; padding:1.25rem;">
+            <div style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:#64748b;margin-bottom:0.4rem;">
+                ${data.cluster_name}
+            </div>
+            <div style="font-size:0.9rem; color:#374151; line-height:1.65;">
+                ${data.info}
+            </div>
+        </div>
+        <div style="margin-top:1rem; display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:0.9rem;text-align:center;">
+                <div style="font-size:0.72rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Кластер</div>
+                <div style="font-size:1.5rem;font-weight:700;color:${color};">№ ${data.cluster}</div>
+            </div>
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:0.9rem;text-align:center;">
+                <div style="font-size:0.72rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Координаты</div>
+                <div style="font-size:0.85rem;font-weight:600;color:#1e293b;margin-top:0.25rem;">${data.lat.toFixed(2)}°N<br>${data.lon.toFixed(2)}°E</div>
+            </div>
+        </div>`;
+    }
+
+    // ─── Tab 3: Map ───────────────────────────────────────────────────────────────
+    window._mapLoaded = false;
+
+    async function loadMap() {
+        window._mapLoaded = true;
+        const resp = await fetch('/api/map-data');
+        const data = await resp.json();
+
+        // Build legend
+        const legendEl = document.getElementById('map-legend');
+        const uniqueClusters = [...new Set(data.map(d => d.cluster))].sort();
+        const clusterNames = {};
+        data.forEach(d => { clusterNames[d.cluster] = d.cluster_name; });
+
+        legendEl.innerHTML = uniqueClusters.map(c => `
+            <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;font-weight:500;color:#374151;background:white;border:1px solid #e2e8f0;padding:0.3rem 0.7rem;border-radius:999px;">
+                <div style="width:10px;height:10px;border-radius:50%;background:${CLUSTER_COLORS[c]||'#999'};"></div>
+                Кластер ${c}: ${clusterNames[c] || ''}
+            </div>`).join('');
+
+        // Group by cluster
+        const traces = uniqueClusters.map(clusterId => {
+            const pts = data.filter(d => d.cluster === clusterId);
+            return {
+                type: 'scattergeo',
+                mode: 'markers+text',
+                name: `Кластер ${clusterId}: ${clusterNames[clusterId] || ''}`,
+                lon: pts.map(p => p.lon),
+                lat: pts.map(p => p.lat),
+                text: pts.map(p => p.region),
+                customdata: pts.map(p => ({ region: p.region, cluster: p.cluster, name: p.cluster_name, desc: p.info })),
+                marker: {
+                    size: 10,
+                    color: CLUSTER_COLORS[clusterId] || '#999',
+                    line: { color: 'white', width: 1.5 },
+                    opacity: 0.9,
+                },
+                hovertemplate:
+                    '<b>%{text}</b><br>' +
+                    'Кластер %{customdata.cluster}: %{customdata.name}<br>' +
+                    '<extra></extra>',
+          };
+      });
+
+      const layout = {
+          geo: {
+              scope: 'world',
+              projection: { type: 'miller' },
+              center: { lat: 65, lon: 95 },
+              projection_scale: 3.5,
+              showland: true,
+              landcolor: '#f1f5f9',
+              showocean: true,
+              oceancolor: '#dbeafe',
+              showcountries: true,
+              countrycolor: '#cbd5e1',
+              showlakes: true,
+              lakecolor: '#dbeafe',
+              showcoastlines: true,
+              coastlinecolor: '#94a3b8',
+              bgcolor: 'transparent',
+          },
+          margin: { t: 10, b: 10, l: 10, r: 10 },
+          paper_bgcolor: 'transparent',
+          plot_bgcolor: 'transparent',
+          legend: { visible: false },
+          showlegend: false,
+          font: { family: 'Inter, sans-serif' },
+      };
+
+      const config = {
+          responsive: true,
+          displayModeBar: true,
+          modeBarButtonsToRemove: ['select2d', 'lasso2d'],
+          displaylogo: false,
+      };
+
+      Plotly.newPlot('map-plot', traces, layout, config);
+
+      // Click handler
+      document.getElementById('map-plot').on('plotly_click', function(eventData) {
+        if (!eventData.points.length) return;
+        const pt = eventData.points[0];
+        const d = pt.customdata;
+        const color = CLUSTER_COLORS[d.cluster] || '#4f46e5';
+        const lightColor = CLUSTER_COLORS_LIGHT[d.cluster] || '#f5f5f5';
+
+        document.getElementById('map-region-name').textContent = d.region;
+        document.getElementById('map-cluster-badge').innerHTML = `
+            <div class="cluster-badge c${d.cluster}">
+                <div class="cluster-dot"></div> Кластер ${d.cluster} — ${d.name}
+            </div>`;
+        document.getElementById('map-region-desc').textContent = d.desc;
+
+        const panel = document.getElementById('map-info-panel');
+        panel.style.display = 'block';
+        panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    }
+
+    // ─── Tab 4: Полярная диаграмма ───────────────────────────────────────────────────────────────
+    async function loadPolarAll() {
+        const viewport = document.getElementById( 'tab-polar' );
+
+        // Целевой контейнер, куда будем складывать кластеры 
+        //viewport.innerHTML = '<div id="default-polar-chart" style="width:100%; height:600px;"></div>';
+        viewport.innerHTML = 
+            `<div id="default-polar-all">
+                <h3 style="text-align: center;">Кластеризация регионов</h3>
+                <div id="default-polar-chart" style="width:100%; height:600px;">
+            </div>
+        `;
+
+        // Делаем запрос к эндпоинту
+        fetch( '/api/polarAll' )
+            .then( res => res.json() )
+            .then( data => {
+                // Настраиваем layout для индивидуального полярного графика
+                const layout = {
+                    //title: 'Крастеризация регионов',
+                    //font: { size: 14 },
+
+                    polar: {
+                        angularaxis: {  
+                            type: 'category',        // Заставляет Plotly распределить текст по кругу равномерно
+                            direction: 'counterclockwise',  // Против часовой стрелки, clockwise - по часовой стрелке
+                            //lotation = 0,                 // Стартовая позиция 0° (направо / восток)
+                            period: 12,              // Указываем точное количество признаков (чтобы сетка не ломалась)
+                            tickfont: { size: 10 }   // Слегка уменьшаем шрифт осей для компактности                            
+                        },
+                        radialaxis: { 
+                            visible: true,
+                            range: [0, 1]            // Так как данные нормализованы MinMaxScaler'ом от 0 до 1                            
+                        }
+                    },
+                    // Финальные увеличенные отступы — текст больше не наползает друг на друга
+                    margin: { l: 90, r: 90, t: 50, b: 50 },
+                    showlegend: true
+                };
+
+                // Отрисовываем изолированный график Plotly в созданный div
+                Plotly.newPlot( 'default-polar-chart', data, layout, {responsive: true} );
+            });
+    }
+
+
+    // ─── Tab 5: Полярная диаграмма ───────────────────────────────────────────────────────────────
+    async function loadPolarByOne() {
+        const viewport = document.getElementById( 'tab-polarOne' );
+
+        // Целевой контейнер, куда будем складывать кластеры 
+        viewport.innerHTML = '<div id="detailed-grid" class="polar-detailed-container"></div>';
+        const grid = document.getElementById( 'detailed-grid' );
+
+        // Делаем запрос к эндпоинту и развертываем графические объекты
+        fetch( '/api/polarByOne' )
+            .then( res => res.json() )
+            .then( clustersData => {
+                clustersData.forEach( item => {
+                    // Создаем ID для DOM-элемента графика
+                    const chartId = `chart-cluster-${item.cluster_id}`;
+
+                    // Формируем строку с перечнем регионов через запятую
+                    const regionsText = item.regions.join( ', ' );
+
+                    // Создаем блок с кластером
+                    const card = document.createElement( 'div' );
+                    card.className = 'cluster-detail-card';
+                    card.innerHTML = `
+                        <h3 class="cluster-card-title">Кластер ${item.cluster_id}</h3>
+                        <div id="${chartId}" class="cluster-chart-embed"></div>
+                        <div class="cluster-regions-list">
+                            <strong>Регионы:</strong> ${regionsText}
+                        </div>
+                    `;
+
+                    // Добавляем карточку в сетку
+                    grid.appendChild( card );
+
+                    // Настраиваем layout для индивидуального полярного графика
+                    const layout = {
+                        polar: {
+                            angularaxis: {
+                                type: 'category',        // Заставляет Plotly распределить текст по кругу равномерно
+                                direction: 'counterclockwise',  // Против часовой стрелки, clockwise - по часовой стрелке
+                                //lotation = 0,                 // Стартовая позиция 0° (направо / восток)
+                                period: 12,              // Указываем точное количество признаков (чтобы сетка не ломалась)
+                                tickfont: { size: 10 }   // Слегка уменьшаем шрифт осей для компактности                            
+                            },
+                            radialaxis: { 
+                                visible: true, 
+                                range: [0, 1] 
+                            }
+                        },
+                        // Финальные увеличенные отступы — текст больше не наползает друг на друга
+                        margin: { l: 90, r: 90, t: 40, b: 40 },
+                        showlegend: false
+                    };
+
+                    // Отрисовываем изолированный график Plotly в созданный div
+                    Plotly.newPlot( chartId, item.trace, layout, {responsive: true} );
+                });
+            })
+            .catch( err => console.error( "Ошибка загрузки детальных карточек:", err ) );        
+
+    }
+
+    </script>
+
+    </body>
+</html>
