@@ -140,5 +140,4 @@
 
 Резервная копия docker-файла [тут](https://drive.google.com/file/d/1DRo2ng4De04yVPxEvlccC58_RSE3Ijz9/view?usp=drive_link)
 
-
 :arrow_up:[к оглавлению](#оглавление)
