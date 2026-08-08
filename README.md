@@ -72,6 +72,9 @@
 ➔ [regions_geo.csv](https://drive.google.com/file/d/1J3nro4cyoTOtzvptHPsOmLrCwmYzIPec/view?usp=drive_link) — Координаты административных центров регионов.
 
 
+Полный архим с исходными данными можно скачать [Здесь](https://github.com/dnt1971/SkillFactory_Itog_Project/blob/master/arh/social_russia_data.7z). 
+
+
 :arrow_up:[к оглавлению](#оглавление)
 
 ### Основные этапы решения задачи  
@@ -109,12 +112,33 @@
 :arrow_up:[к оглавлению](#оглавление)
 
 
-### Развертывание модели
+### Развертывание модели 
 
-1. Активируйте среду окружения
-source venv/bin/activate
+**Ручной запуск**
+1. Создайте виртуальное окружение
+*python3 -m venv venv*
 
-2. Установите зависимости
-pip install -r requirements.txt
+2. Активируйте среду окружения
+*source venv/bin/activate*
+
+3. Установите зависимости
+*pip install -r requirements.txt*
+
+4. Пошагово
+3.1. Выполните *01_preprocessing.ipynb*
+3.2. Выполните *02_eda.ipynb*
+3.3. Выполните *03_model.ipynb*
+3.4. Выполните *04_model_from_file.ipynb*
+3.5. Запустите сервер *uvicorn server:app --reload*
+
+**Запуск сайта из образа**
+Для скачивания образа выполните команду:
+*$ docker pull dnt1971/project_cluster_container*
+
+Для запуска образа выполните команду:
+*$ docker run -d -p 8000:8000 --name=prod_test dnt1971/project_cluster_container*
+
+Резервная копя docker-файла [тут](https://drive.google.com/file/d/1DRo2ng4De04yVPxEvlccC58_RSE3Ijz9/view?usp=drive_link)
+
 
 :arrow_up:[к оглавлению](#оглавление)
