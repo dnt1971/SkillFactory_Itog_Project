@@ -41,11 +41,12 @@ async def lifespan( app: FastAPI ):
     cols_for_draw = df_features['cols_for_draw'].to_list()
     cols_for_draw.append( 'cluster' )    
     cols_for_geo = ['region', 'lat', 'lon', 'cluster']
-    
-    DATA_STORE[ 'df_regions_draw' ] = df_regions[ cols_for_draw ].copy()
-    DATA_STORE[ 'df_regions_geo' ] = df_regions[ cols_for_geo ].copy()
-    DATA_STORE[ 'df_clusters' ] = df_clusters
-    DATA_STORE[ 'df_regions_merged' ] = df_regions.merge( df_clusters, on = "cluster", how = "left" )
+
+    # Готовим датасеты
+    DATA_STORE[ 'df_regions_draw' ] = df_regions[ cols_for_draw ].copy()  # Данные с отображаемыми признаками
+    DATA_STORE[ 'df_regions_geo' ] = df_regions[ cols_for_geo ].copy()    # Широта и долгота административных центров
+    DATA_STORE[ 'df_clusters' ] = df_clusters                             # Описание кластеров
+    DATA_STORE[ 'df_regions_merged' ] = df_regions.merge( df_clusters, on = "cluster", how = "left" ) # Склеивает данные с признаками и координаты
     
     yield
     DATA_STORE.clear()
@@ -148,6 +149,7 @@ async def get_map_data():
 #
 #####################################################################################################
 def prepare_for_draw():
+    # Берем данные 
     df_regions_draw = DATA_STORE[ 'df_regions_draw' ]
 
     # Группируем и масштабируем признаки
