@@ -103,7 +103,7 @@
 * 1 - Лидеры промышленности и инфраструктуры.
 * 2 - Дотационные регионы.
 
-Результат особе6нностей кластеров подробно описан [здесь](https://github.com/dnt1971/SkillFactory_Itog_Project/blob/master/03_model.ipynb) и [здесь](https://github.com/dnt1971/SkillFactory_Itog_Project/blob/master/04_model.ipynb). Также создан web-сайт, размещенный в докер-контейнере для получения инфорации о регионе о результатах кластеризации.
+Результат особе6нностей кластеров подробно описан [здесь](https://github.com/dnt1971/SkillFactory_Itog_Project/blob/master/03_model.ipynb) и [здесь](https://github.com/dnt1971/SkillFactory_Itog_Project/blob/master/04_model_from_file.ipynb). Также создан web-сайт, размещенный в докер-контейнере для получения инфорации о регионе о результатах кластеризации.
 
 :arrow_up:[к оглавлению](#оглавление)
 
