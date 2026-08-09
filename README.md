@@ -129,7 +129,7 @@
 5.4. Выполните *04_model_from_file.ipynb*<br>
 5.5. Запустите сервер *uvicorn server:app --reload*<br>
 
-**Запуск сайта из образа**
+**Запуск сайта из образа**<br>
 Для скачивания образа выполните команду:<br>
 *$ docker pull dnt1971/project_cluster_container*
 
