@@ -130,10 +130,10 @@
 5.5. Запустите сервер *uvicorn server:app --reload*<br>
 
 **Запуск сайта из образа**
-Для скачивания образа выполните команду:
+Для скачивания образа выполните команду:<br>
 *$ docker pull dnt1971/project_cluster_container*
 
-Для запуска образа выполните команду:
+Для запуска образа выполните команду:<br>
 *$ docker run -d -p 8000:8000 --name=prod_test dnt1971/project_cluster_container*
 
 Резервная копия docker-файла [тут](https://drive.google.com/file/d/1DRo2ng4De04yVPxEvlccC58_RSE3Ijz9/view?usp=drive_link)
