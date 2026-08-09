@@ -29,7 +29,7 @@
 :arrow_up:[к оглавлению](#оглавление)
 
 ### Описание данных
-Данные о доходах, заболеваемости, социально незащищённых слоях населения России и другие экономические и демографические данные [здесь](https://drive.google.com/file/d/1WLGnZY7XpD1cO8a-U1Jncb9oysC3fTg8/view?usp=drive_link) 
+Данные о доходах, заболеваемости, социально незащищённых слоях населения России и другие экономические и демографические данные [здесь](https://drive.google.com/file/d/1WLGnZY7XpD1cO8a-U1Jncb9oysC3fTg8/view?usp=drive_link) или [Здесь](https://github.com/dnt1971/SkillFactory_Itog_Project/blob/master/arh/social_russia_data.7z). 
 
 ➔ [child_mortality_rural_1990_2021.xls](https://docs.google.com/spreadsheets/d/13idFZetR43Ceh0YGxz4e7ZBgltflTzqz/edit?usp=drive_link&ouid=103632009178932960617&rtpof=true&sd=true) — число умерших на первом году жизни детей за год, по всем регионам, в сельской местности.
 
@@ -70,10 +70,6 @@
 ➔ [retired_count_2016_2021.xls](https://docs.google.com/spreadsheets/d/1zmLau2xesw6kw-Z-eqwmjyCUd54WXbfD/edit?usp=drive_link&ouid=103632009178932960617&rtpof=true&sd=true) — Количество пенсионеров (на конец года).
 
 ➔ [regions_geo.csv](https://drive.google.com/file/d/1J3nro4cyoTOtzvptHPsOmLrCwmYzIPec/view?usp=drive_link) — Координаты административных центров регионов.
-
-
-Полный архим с исходными данными можно скачать [Здесь](https://github.com/dnt1971/SkillFactory_Itog_Project/blob/master/arh/social_russia_data.7z). 
-
 
 :arrow_up:[к оглавлению](#оглавление)
 
