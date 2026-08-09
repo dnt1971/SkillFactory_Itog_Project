@@ -123,11 +123,11 @@
 *pip install -r requirements.txt*
 
 5. Пошагово
-5.1. Выполните *01_preprocessing.ipynb*
-5.2. Выполните *02_eda.ipynb*
-5.3. Выполните *03_model.ipynb*
-5.4. Выполните *04_model_from_file.ipynb*
-5.5. Запустите сервер *uvicorn server:app --reload*
+5.1. Выполните *01_preprocessing.ipynb*<br>
+5.2. Выполните *02_eda.ipynb*<br>
+5.3. Выполните *03_model.ipynb*<br>
+5.4. Выполните *04_model_from_file.ipynb*<br>
+5.5. Запустите сервер *uvicorn server:app --reload*<br>
 
 **Запуск сайта из образа**
 Для скачивания образа выполните команду:
@@ -138,4 +138,5 @@
 
 Резервная копия docker-файла [тут](https://drive.google.com/file/d/1DRo2ng4De04yVPxEvlccC58_RSE3Ijz9/view?usp=drive_link)
 
-:arrow_up:[к оглавлению](#оглавление)
+:arrow_up:[к оглавлению](#оглавление) 
+
