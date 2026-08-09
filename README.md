@@ -80,7 +80,7 @@
 4. Интерпритация результатов моделирования
 5. Создание web-сервера для визуализации результатов моделирования и развертываение в формате докер-контейнера
 6. Документирование проекта
-7. Выгрузка в [GitHubhttps://github.com/dnt1971/SkillFactory_Itog_Project]() и [DockerHub](https://hub.docker.com/repository/docker/dnt1971/project_cluster_container/general)
+7. Выгрузка в [GitHub](https://github.com/dnt1971/SkillFactory_Itog_Project) и [DockerHub](https://hub.docker.com/repository/docker/dnt1971/project_cluster_container/general)
 
 :arrow_up:[к оглавлению](#оглавление)
 
